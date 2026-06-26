@@ -1,4 +1,4 @@
-# Excel Python Mini LLM Demo
+# Excelで体験する言語モデルのしくみ
 
 Excel for Microsoft 365 の Python セルで、言語モデルの基本にある「次の token を予測する」考え方を体験するための教材です。
 
@@ -6,7 +6,7 @@ Excel for Microsoft 365 の Python セルで、言語モデルの基本にある
 
 ## Download
 
-- [excel-python-mini-llm-demo-v2.xlsx](./excel-python-mini-llm-demo-v2.xlsx)
+- [Excelで体験する言語モデルのしくみ.xlsx](./Excelで体験する言語モデルのしくみ.xlsx)
 
 ## Requirements
 
