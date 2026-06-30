@@ -1,21 +1,28 @@
-# Excelで体験する言語モデルのしくみ 第1回 n-gram
+# 第1回 n-gram
 
-このフォルダは、シリーズ第1回「n-gram」の資料一式です。
+ExcelをUIとして使い、Python in Excelで言語モデルの仕組みを小さく確認する教材です。
+
+直前のtoken列から次に来やすいtokenを選ぶ仕組みを確認します。
 
 ## ファイル
 
-- `excel_n_gram_demo.xlsx`: デモ用Excel。`00_README`、`01_Demo`、`13_SERIES_ROADMAP` などを含む。
-- `excel_n_gram_slides.pptx`: 登壇用スライド。第1回表紙、全10回ロードマップ、n-gram解説を含む。
-- `excel_n_gram_video.mp4`: 解説スライドの読み上げ動画。VOICEVOX 青山龍星で作成。
-- `excel_n_gram_video.srt`: YouTube設定用の字幕ファイル。
-- `excel_n_gram_narration.md`: スライドごとの登壇シナリオ。
-- `excel_n_gram_demo_design.md`: 第1回デモの設計説明。
-- `series_roadmap.md`: 全10回のシリーズロードマップ。
-- `thumbnail.jpg`: サムネイル画像。
-- `screenshots/`: Excel画面のスクリーンショット。
+| ファイル | 内容 |
+| --- | --- |
+| `excel_n_gram_demo.xlsx` | デモ用Excel。入力、設定、確認表を含みます。 |
+| `excel_n_gram_demo_code.py` | Python in Excelへ貼り付ける外部Pythonコードです。 |
+| `excel_n_gram_slides.pptx` | 解説スライドです。 |
+| `README.md` | この説明ファイルです。 |
 
-## 位置づけ
+## 使い方
 
-第1回では、n-gramの「直前のtoken列を見る」方式を体験します。
+1. `excel_n_gram_demo.xlsx` を開きます。
+2. Excelの入力シートで、入力値や確認対象を見ます。
+3. `excel_n_gram_demo_code.py` を開き、コードをPython in Excelへ貼り付けます。
+4. `Ctrl + Enter` で実行します。
+5. Excelに返る表を見て、入力や設定の変更で何が変わるかを確認します。
 
-第2回 Self-Attention では、直前だけでなく文全体のどこを見るかを重みとして観察します。
+## 注意
+
+- この教材は説明用の小さなデモです。
+- GPTのような大規模LLMそのものをExcelで再現するものではありません。
+- マクロ、外部APIキー、クラウドLLM呼び出しは使っていません。
