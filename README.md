@@ -1,28 +1,48 @@
 # Excelで体験する言語モデルのしくみ
 
-Excel for Microsoft 365 の Python セルで、言語モデルの基本にある「次の token を予測する」考え方を体験するための教材です。
+ExcelをUIとして使い、Python in Excelで言語モデルの基本部品を小さく観察する全10回シリーズです。
 
-これは GPT のような大規模 LLM ではありません。小さなコーパスを読み込み、直前の token から次の token を確率的に選ぶ n-gram モデルです。
+この教材は、GPTのような大規模LLMそのものをExcelで再現するものではありません。入力、設定、確認表をExcelで見えるようにし、計算本体は外部PythonコードをPython in Excelへ貼り付けて実行します。
 
-## Download
+## 含まれるもの
 
-- [Excelで体験する言語モデルのしくみ.xlsx](./Excelで体験する言語モデルのしくみ.xlsx)
+各回フォルダには、次のファイルを置いています。
 
-## Requirements
+- デモ用Excel `.xlsx`
+- Python in Excelへ貼り付ける外部 `.py`
+- 解説スライド `.pptx`
+- 各回README
+
+## 全10回
+
+| 回 | テーマ | フォルダ |
+| --- | --- | --- |
+| 第1回 | n-gram | [第1回_n-gram](./第1回_n-gram) |
+| 第2回 | Self-Attention | [第2回_Self-Attention](./第2回_Self-Attention) |
+| 第3回 | Embedding | [第3回_Embedding](./第3回_Embedding) |
+| 第4回 | Positional Encoding | [第4回_Positional_Encoding](./第4回_Positional_Encoding) |
+| 第5回 | Multi-Head Attention | [第5回_Multi-Head_Attention](./第5回_Multi-Head_Attention) |
+| 第6回 | Transformer Block | [第6回_Transformer_Block](./第6回_Transformer_Block) |
+| 第7回 | Softmax Generation | [第7回_Softmax_Generation](./第7回_Softmax_Generation) |
+| 第8回 | Loss Learning | [第8回_Loss_Learning](./第8回_Loss_Learning) |
+| 第9回 | Backpropagation | [第9回_Backpropagation](./第9回_Backpropagation) |
+| 第10回 | RAG | [第10回_RAG](./第10回_RAG) |
+
+## 必要環境
 
 - Microsoft 365 Excel
 - Python in Excel が利用できる環境
 
-## Notes
+## 基本的な使い方
 
-- このブックは `.xlsx` 形式です。マクロは含めていません。
-- 外部 API キーやクラウド LLM の呼び出しは使っていません。
-- Python セルを実行すると、`generated_text` に生成結果が表示されます。
+1. 各回フォルダのExcelファイルを開きます。
+2. 入力シートで、入力値や確認対象を見ます。
+3. 同じフォルダの外部 `.py` ファイルを開きます。
+4. Python in ExcelのPythonエディターへコードを貼り付け、`Ctrl + Enter` で実行します。
+5. Excelに返る表を切り替え、入力変更による見え方の変化を確認します。
 
-## Demo Flow
+## 注意
 
-1. `01_Demo` の入力値を確認します。
-2. `03_Python_Code` のコードを Python セルに貼り付けます。
-3. `Ctrl + Enter` で実行します。
-4. `generated_text` と `top_candidates` を確認します。
-5. `02_Corpus` や `温度`、`モデル次数` を変えて結果の違いを見ます。
+- `.xlsx` 形式です。マクロは含めていません。
+- 外部APIキーやクラウドLLMの呼び出しは使っていません。
+- 各回のExcelとPythonコードは教材用に小さく作っています。
