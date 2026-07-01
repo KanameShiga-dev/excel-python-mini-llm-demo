@@ -1,18 +1,18 @@
 import pandas as pd
 
-question = "Python in ExcelでRAG教材を外部APIなしで動かすとき、検索スコア、根拠、回答案の何を確認すればよいですか"
-top_k = 3
-score_threshold = 0.18
-query_features = [('python', 1.0), ('excel', 1.0), ('rag', 1.4), ('外部api', 1.2), ('検索', 1.1), ('根拠', 1.2), ('回答', 0.9), ('教材', 0.8)]
-documents = [
-    {"document_id":"D01","title":"RAGの基本","text":"RAGは質問に近い外部資料を検索し、その根拠を回答に添える構成です。","tags":"rag,検索,根拠,回答"},
-    {"document_id":"D02","title":"Python in Excel","text":"Python in Excelではコード実行はMicrosoft Cloud上で行われ、実行には対応するMicrosoft 365環境とインターネット接続が必要です。","tags":"python,excel,実行環境,cloud"},
-    {"document_id":"D03","title":"教材用の簡略化","text":"この教材では外部APIを呼ばず、キーワード重みによる簡易スコアで検索の流れを確認します。","tags":"教材,外部api,検索,簡略化"},
-    {"document_id":"D04","title":"生成の扱い","text":"回答生成はLLM APIではなく、上位文書の根拠文を使ったテンプレートで組み立てます。","tags":"回答,根拠,テンプレート,llm"},
-    {"document_id":"D05","title":"前回との違い","text":"Backpropagationは内部重みを更新しますが、RAGは学習済みモデルの外側に資料をつなぎます。","tags":"backpropagation,rag,外部資料,重み"},
-    {"document_id":"D06","title":"本格RAGで必要なもの","text":"実サービスではembedding、ベクトルDB、chunking、reranker、プロンプト設計、権限管理が重要です。","tags":"embedding,vector,chunking,reranker"},
-    {"document_id":"D07","title":"確認する表","text":"検索スコア、上位文書、根拠文、回答案を分けて見ると、どの資料を使ったか説明しやすくなります。","tags":"検索,スコア,上位文書,根拠,回答"},
+input_source_df = xl("'01_INPUT'!A6:C9", headers=True).dropna(how="all")
+documents_source_df = xl("'02_DOCUMENTS'!A5:D12", headers=True).dropna(how="all")
+query_features_source_df = xl("'03_QUERY_FEATURES'!A5:C13", headers=True).dropna(how="all")
+
+settings = dict(zip(input_source_df["parameter"].astype(str), input_source_df["value"]))
+question = str(settings.get("question", ""))
+top_k = int(float(settings.get("top_k", 3)))
+score_threshold = float(settings.get("score_threshold", 0.18))
+query_features = [
+    (str(row["query_feature"]), float(row["weight"]))
+    for _, row in query_features_source_df.iterrows()
 ]
+documents = documents_source_df[["document_id", "title", "text", "tags"]].to_dict("records")
 q_terms = [term for term, weight in query_features if term.lower() in question.lower()]
 max_possible = sum(weight for term, weight in query_features if term in q_terms) or 1.0
 query_features_df = pd.DataFrame([{"query_feature":term,"weight":weight,"status":"queryに含まれる" if term in q_terms else "検索語として待機"} for term, weight in query_features])

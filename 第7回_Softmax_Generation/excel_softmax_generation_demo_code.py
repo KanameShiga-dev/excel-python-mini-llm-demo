@@ -1,12 +1,18 @@
 import pandas as pd
 import numpy as np
 
-context_tokens = ["今日", "猫", "ごはん", "食べる"]
-vocab = ["です", "ました", "ね", "よ", "犬", "走る"]
-logits = np.array([2.2, 1.5, 0.9, 0.4, -0.2, -0.8])
-temperatures = [0.7, 1.0, 1.5]
-top_k = 3
-seeds = [11, 22, 33, 44, 55]
+context_source_df = xl("'01_INPUT'!A6:B12", headers=True).dropna(how="all")
+candidate_source_df = xl("'01_INPUT'!E6:F12", headers=True).dropna(how="all")
+settings_source_df = xl("'01_INPUT'!A15:C18", headers=True).dropna(how="all")
+
+context_tokens = context_source_df["token"].dropna().astype(str).tolist()
+vocab = candidate_source_df["candidate_token"].astype(str).tolist()
+logits = candidate_source_df["logit"].astype(float).to_numpy()
+settings = dict(zip(settings_source_df["parameter"].astype(str), settings_source_df["value"]))
+temperature = float(settings.get("temperature", 1.0))
+temperatures = [0.7, temperature, 1.5]
+top_k = int(float(settings.get("top_k", 3)))
+seeds = [int(s.strip()) for s in str(settings.get("seed", "11, 22, 33, 44, 55")).split(",") if s.strip()]
 
 def softmax(values, temperature=1.0):
     scaled = values / temperature

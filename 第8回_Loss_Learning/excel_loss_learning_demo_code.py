@@ -1,12 +1,17 @@
 import pandas as pd
 import numpy as np
 
-context_tokens = ["今日", "猫", "ごはん", "食べる"]
-vocab = ["です", "ました", "ね", "よ", "犬", "走る"]
-initial_logits = np.array([2.2, 1.5, 0.9, 0.4, -0.2, -0.8], dtype=float)
-target_token = "ました"
-learning_rate = 0.8
-training_steps = 4
+context_source_df = xl("'01_INPUT'!A6:B12", headers=True).dropna(how="all")
+candidate_source_df = xl("'01_INPUT'!E6:G12", headers=True).dropna(how="all")
+settings_source_df = xl("'01_INPUT'!A15:C18", headers=True).dropna(how="all")
+
+context_tokens = context_source_df["token"].dropna().astype(str).tolist()
+vocab = candidate_source_df["candidate_token"].astype(str).tolist()
+initial_logits = candidate_source_df["initial_logit"].astype(float).to_numpy()
+settings = dict(zip(settings_source_df["parameter"].astype(str), settings_source_df["value"]))
+target_token = str(settings.get("target_token", candidate_source_df.loc[candidate_source_df["target"].notna(), "candidate_token"].iloc[0]))
+learning_rate = float(settings.get("learning_rate", 0.8))
+training_steps = int(float(settings.get("training_steps", 4)))
 
 def softmax(values):
     shifted = values - values.max()

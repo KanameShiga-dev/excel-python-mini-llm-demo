@@ -5,19 +5,28 @@ import pandas as pd
 # Embeddingに位置情報を足すデモです。
 # このコードは教材用であり、本物の大規模言語モデルのEmbeddingを再現するものではありません。
 
-tokens_a = ["私", "は", "りんご", "を", "食べる"]
-tokens_b = ["りんご", "を", "私", "は", "食べる"]
+input_a_source_df = xl("'01_INPUT'!A4:C9", headers=True).dropna(how="all")
+input_b_source_df = xl("'01_INPUT'!A11:C16", headers=True).dropna(how="all")
+embedding_source_df = xl("'02_EMBEDDING'!A4:E9", headers=True).dropna(how="all")
 
-d_model = 4
+tokens_a = input_a_source_df["token"].dropna().astype(str).tolist()
+tokens_b = input_b_source_df["token"].dropna().astype(str).tolist()
+
+embedding_dim_columns = [c for c in embedding_source_df.columns if str(c).startswith("dim_")]
+d_model = len(embedding_dim_columns)
 max_len = max(len(tokens_a), len(tokens_b))
 
 embedding_table = {
-    "私": [0.20, 0.80, 0.10, 0.30],
-    "は": [0.10, 0.20, 0.70, 0.20],
-    "りんご": [0.90, 0.10, 0.30, 0.60],
-    "を": [0.10, 0.30, 0.60, 0.10],
-    "食べる": [0.70, 0.40, 0.20, 0.80],
+    str(row["token"]): [float(row[col]) for col in embedding_dim_columns]
+    for _, row in embedding_source_df.iterrows()
 }
+
+def fallback_embedding(token):
+    base = sum(ord(ch) for ch in str(token))
+    return [round(((base + i * 17) % 100) / 100, 2) for i in range(d_model)]
+
+for token in sorted(set(tokens_a + tokens_b)):
+    embedding_table.setdefault(token, fallback_embedding(token))
 
 def make_positional_encoding(max_len, d_model):
     pe = np.zeros((max_len, d_model))

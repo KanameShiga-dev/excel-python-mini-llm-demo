@@ -1,17 +1,18 @@
 import pandas as pd
 import numpy as np
 
-features = ["明るさ", "くだけた表現", "過去形らしさ"]
-x = np.array([0.60, 0.25, 0.80], dtype=float)
-vocab = ["です", "ました", "ね", "よ"]
-W = np.array([
-    [0.25, 0.50, -0.20, 0.10],
-    [0.10, -0.15, 0.35, 0.20],
-    [-0.30, 0.60, 0.05, -0.10],
-], dtype=float)
-b = np.array([0.10, 0.00, -0.05, 0.08], dtype=float)
-target_token = "ました"
-learning_rate = 0.7
+input_source_df = xl("'01_INPUT'!A6:F9", headers=True).dropna(how="all")
+settings_source_df = xl("'01_INPUT'!A13:C16", headers=True).dropna(how="all")
+
+features = input_source_df["input_feature"].astype(str).tolist()
+x = input_source_df["x_value"].astype(float).to_numpy()
+weight_columns = [c for c in input_source_df.columns if str(c).startswith("W_to_")]
+vocab = [str(c).replace("W_to_", "") for c in weight_columns]
+W = input_source_df[weight_columns].astype(float).to_numpy()
+settings = dict(zip(settings_source_df["parameter"].astype(str), settings_source_df["value"]))
+b = np.array([float(v.strip()) for v in str(settings.get("bias", "[0.1, 0.0, -0.05, 0.08]")).strip("[]").split(",")], dtype=float)
+target_token = str(settings.get("target_token", "ました"))
+learning_rate = float(settings.get("learning_rate", 0.7))
 
 def softmax(values):
     shifted = values - values.max()

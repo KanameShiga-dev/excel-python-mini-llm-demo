@@ -1,22 +1,13 @@
 import pandas as pd
 import numpy as np
 
-tokens = ["今日", "猫", "ごはん", "食べる"]
-dims = ["d1:意味", "d2:主語", "d3:動作", "d4:時制"]
+input_source_df = xl("'01_INPUT'!A6:E10", headers=True).dropna(how="all")
+attention_source_df = xl("'01_INPUT'!H6:L10", headers=True).dropna(how="all")
 
-X = np.array([
-    [0.20, 0.10, 0.00, 0.70],
-    [0.80, 0.90, 0.10, 0.20],
-    [0.50, 0.20, 0.60, 0.10],
-    [0.30, 0.10, 0.90, 0.40],
-])
-
-attention_output = np.array([
-    [0.05, 0.00, 0.10, 0.20],
-    [0.30, 0.20, 0.05, 0.00],
-    [0.10, 0.05, 0.25, 0.05],
-    [0.20, 0.10, 0.30, 0.10],
-])
+tokens = input_source_df["token"].astype(str).tolist()
+dims = [c for c in input_source_df.columns if c != "token"]
+X = input_source_df[dims].astype(float).to_numpy()
+attention_output = attention_source_df[dims].astype(float).to_numpy()
 
 W1 = np.array([
     [0.5, -0.2, 0.1, 0.3, 0.2, -0.1],

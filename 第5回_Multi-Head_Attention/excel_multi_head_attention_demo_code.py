@@ -4,28 +4,26 @@ import pandas as pd
 # 第5回 Multi-Head Attention
 # Q/K/V -> score -> softmax -> output -> concat を実際に計算します。
 
-tokens = ["私", "は", "りんご", "を", "食べる"]
-dk = 2
-X = np.array([
-    [0.20, 0.80, 0.10, 0.30],
-    [0.10, 0.20, 0.70, 0.20],
-    [0.90, 0.10, 0.30, 0.60],
-    [0.10, 0.30, 0.60, 0.10],
-    [0.70, 0.40, 0.20, 0.80],
-])
+input_x_source_df = xl("'01_INPUT_X'!A3:F8", headers=True).dropna(how="all")
+head1_weight_source_df = xl("'02_WEIGHTS_HEAD1'!A3:D15", headers=True).dropna(how="all")
+head2_weight_source_df = xl("'07_WEIGHTS_HEAD2'!A3:D15", headers=True).dropna(how="all")
+
+tokens = input_x_source_df["token"].astype(str).tolist()
+x_columns = [c for c in input_x_source_df.columns if str(c).startswith("x")]
+X = input_x_source_df[x_columns].astype(float).to_numpy()
+
+def weight_matrices(weight_df):
+    out_columns = [c for c in weight_df.columns if str(c).startswith("out_")]
+    return {
+        matrix_name: weight_df[weight_df["matrix"].eq(matrix_name)][out_columns].astype(float).to_numpy()
+        for matrix_name in ["Wq", "Wk", "Wv"]
+    }
 
 W = {
-    "Head 1": {
-        "Wq": np.array([[1.0, 0.0], [0.0, 1.0], [0.5, 0.0], [0.0, 0.5]]),
-        "Wk": np.array([[0.8, 0.1], [0.1, 0.8], [0.4, 0.2], [0.2, 0.4]]),
-        "Wv": np.array([[1.0, 0.0], [0.0, 1.0], [0.5, 0.0], [0.0, 0.5]]),
-    },
-    "Head 2": {
-        "Wq": np.array([[0.4, 0.7], [0.8, 0.1], [0.1, 0.6], [0.6, 0.2]]),
-        "Wk": np.array([[0.5, 0.6], [0.7, 0.2], [0.2, 0.7], [0.6, 0.3]]),
-        "Wv": np.array([[0.6, 0.2], [0.2, 0.8], [0.7, 0.1], [0.1, 0.6]]),
-    },
+    "Head 1": weight_matrices(head1_weight_source_df),
+    "Head 2": weight_matrices(head2_weight_source_df),
 }
+dk = W["Head 1"]["Wk"].shape[1]
 
 def r(v):
     return round(float(v), 4)
